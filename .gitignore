@@ -10,3 +10,13 @@ math_tutor.py
 installer.nsi
 _selftest.py
 ui.html
+
+# Node / Capacitor
+node_modules/
+android/app/build/
+android/build/
+android/.gradle/
+android/capacitor-cordova-android-plugins/build/
+android/app/build/outputs/
+*.apk
+!.gitignore

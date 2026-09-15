@@ -1,0 +1,12 @@
+{
+  "appId": "com.mathtutor.app",
+  "appName": "數學解題練習",
+  "webDir": "docs",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#0f0f23"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
