@@ -1,0 +1,22 @@
+{
+  "name": "數學解題練習",
+  "short_name": "數學練習",
+  "description": "小一～高三數學練習題，支持 iOS / Android / 任何瀏覽器",
+  "start_url": "/web/",
+  "display": "standalone",
+  "background_color": "#0f0f23",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
