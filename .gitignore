@@ -3,6 +3,10 @@ __pycache__/
 build/
 *.spec
 
+# 核心原始碼不上傳
+core.py
+app.py
 math_tutor.py
 installer.nsi
 _selftest.py
+ui.html
