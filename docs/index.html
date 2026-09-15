@@ -21,23 +21,27 @@ background:var(--bg);color:var(--text);overflow-x:hidden}
 @keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 @keyframes pop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 4px rgba(0,212,255,.14)}50%{box-shadow:0 0 16px rgba(0,212,255,.38)}}
 header{text-align:center;padding:24px 0 16px}
 header h1{font-size:1.6rem;background:linear-gradient(135deg,var(--accent),var(--accent2));
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 header p{color:var(--muted);font-size:.85rem;margin-top:4px}
 .grade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
 .grade-btn{
-background:var(--card);border:2px solid transparent;border-radius:var(--radius);
-padding:14px 4px;text-align:center;color:var(--text);font-size:.95rem;font-weight:600;
-cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+  background:var(--card);border:2px solid transparent;border-radius:var(--radius);
+  padding:14px 4px;text-align:center;color:var(--text);font-size:.95rem;font-weight:600;
+  cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  animation:glow 2.8s ease-in-out infinite}
 .grade-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.grade-btn:hover{animation-duration:1.2s}
 .grade-btn .cnt{display:block;font-size:.7rem;color:var(--muted);font-weight:400;margin-top:2px}
 .topic-list{display:flex;flex-direction:column;gap:6px;margin:12px 0}
 .topic-btn{
-background:var(--card);border:1px solid #334155;border-radius:12px;
-padding:12px 16px;color:var(--text);font-size:.9rem;text-align:left;
-cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center}
-.topic-btn:hover{border-color:var(--accent);background:#1e293b}
+  background:var(--card);border:1px solid #334155;border-radius:12px;
+  padding:12px 16px;color:var(--text);font-size:.9rem;text-align:left;
+  cursor:pointer;transition:all .2s;display:flex;justify-content:space-between;align-items:center;
+  animation:glow 2.8s ease-in-out infinite}
+.topic-btn:hover{border-color:var(--accent);background:#1e293b;animation-duration:1.2s}
 .topic-btn .icon{font-size:1.2rem}
 .q-card{
 background:var(--card);border-radius:var(--radius);padding:24px 20px;
@@ -58,9 +62,10 @@ outline:none;transition:border-color .2s}
 .input-row input.wrong{border-color:var(--wrong);background:rgba(239,68,68,.08)}
 .btn-row{display:flex;gap:8px;margin:8px 0}
 .btn{
-flex:1;border:none;border-radius:12px;padding:14px;font-size:.95rem;font-weight:600;
-cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.btn:active{transform:scale(.96)}
+  flex:1;border:none;border-radius:12px;padding:14px;font-size:.95rem;font-weight:600;
+  cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+  animation:glow 2.8s ease-in-out infinite}
+.btn:active{transform:scale(.96);animation-duration:.6s}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
 .btn-secondary{background:#1e293b;color:var(--text);border:1px solid #334155}
 .btn-reveal{background:#334155;color:var(--muted)}
@@ -111,14 +116,14 @@ color:#fff;font-size:.55rem;padding:2px 6px;border-radius:6px;font-weight:700}
   </div>
   <!-- 題型選單 -->
   <div id="topics" class="screen">
-    <button class="btn btn-secondary" onclick="goHome()" style="margin-bottom:8px">← 返回年級</button>
+    <button class="btn btn-secondary" onclick="navHome()" style="margin-bottom:8px">← 返回年級</button>
     <h2 id="topicTitle" style="font-size:1.2rem;margin-bottom:8px"></h2>
     <div class="topic-list" id="topicList"></div>
   </div>
   <!-- 練習中 -->
   <div id="quiz" class="screen">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <button class="btn btn-secondary" onclick="backToTopics()" style="padding:8px 12px;font-size:.8rem">← 返回</button>
+      <button class="btn btn-secondary" onclick="goBack()" style="padding:8px 12px;font-size:.8rem">← 返回</button>
       <span id="quizGrade" style="font-size:.75rem;color:var(--muted)"></span>
     </div>
     <div class="score-bar">
@@ -145,7 +150,7 @@ color:#fff;font-size:.55rem;padding:2px 6px;border-radius:6px;font-weight:700}
 </div>
 <div class="toast" id="toast"></div>
 <nav class="nav-bar" id="navBar">
-  <a class="nav-btn active" onclick="showScreen('home')">
+  <a class="nav-btn active" onclick="navHome()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"/></svg>
     首頁
   </a>
@@ -168,7 +173,7 @@ GRADES.forEach(g=>{
   const b=document.createElement('button');
   b.className='grade-btn';
   b.innerHTML=g+'<span class="cnt">'+gradeCounts[g]+' 題型</span>';
-  b.onclick=()=>showTopics(g);
+  b.onclick=()=>location.hash='#/topics/'+encodeURIComponent(g);
   gradeGrid.appendChild(b);
 });
 // Mix button
@@ -188,8 +193,27 @@ function showScreen(id){
   if(id==='home')document.querySelectorAll('.nav-btn')[0].classList.add('active');
 }
 
-function goHome(){showScreen('home');}
+// ---------- 導航（hash 路由，手機/瀏覽器返回鍵可用） ----------
+function navHome(){location.hash='#/';}
+function randomQuiz(){location.hash='#/quiz/隨機';}
 
+// 根據 hash 顯示對應畫面
+function route(){
+  const h=decodeURIComponent(location.hash)||'#/';
+  if(h.startsWith('#/quiz/')){
+    const parts=h.slice(7).split('/');
+    const g=parts[0],t=parts[1]||'';
+    if(g==='隨機'){currentGrade='隨機';currentTopic='';}
+    else if(!(G[g]||[]).length||(t&&!getTopics(g).some(x=>x[0]===t))){showHome();return;}
+    else{currentGrade=g;currentTopic=t;}
+    showScreen('quiz');updateScore();nextQ();
+  }else if(h.startsWith('#/topics/')){
+    const g=h.slice(9);
+    if(!(G[g]||[]).length){showHome();return;}
+    showTopics(g);
+  }else showHome();
+}
+function showHome(){showScreen('home');}
 function showTopics(g){
   currentGrade=g;
   showScreen('topics');
@@ -201,19 +225,9 @@ function showTopics(g){
     const b=document.createElement('button');
     b.className='topic-btn';
     b.innerHTML='<span>'+name+'</span><span class="icon">→</span>';
-    b.onclick=()=>startQuiz(g,name);
+    b.onclick=()=>location.hash='#/quiz/'+encodeURIComponent(currentGrade)+'/'+encodeURIComponent(name);
     list.appendChild(b);
   });
-}
-
-function startQuiz(g,t){
-  currentGrade=g;currentTopic=t;total=0;correct=0;wrong=0;
-  showScreen('quiz');updateScore();nextQ();
-}
-
-function randomQuiz(){
-  currentGrade='隨機';currentTopic='';
-  showScreen('quiz');updateScore();nextQ();
 }
 
 function getQ(){
@@ -278,6 +292,20 @@ function reveal(){
 document.getElementById('ansInput').addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault();if(answered)nextQ();else submitAns();}
 });
+
+// ---------- 返回鍵 / hash 路由 ----------
+function goBack(){
+  const h=location.hash;
+  if(h.startsWith('#/quiz/')){
+    if(currentGrade==='隨機')location.hash='#/';
+    else location.hash='#/topics/'+encodeURIComponent(currentGrade);
+  }else if(h.startsWith('#/topics/'))location.hash='#/';
+  else location.hash='#/';
+}
+window.addEventListener('hashchange',route);
+if(!location.hash)history.replaceState(null,'','#/');
+// 初次啟動依 hash 顯示
+route();
 
 function updateScore(){
   document.getElementById('qIdx').textContent=total;
