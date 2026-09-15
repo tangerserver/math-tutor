@@ -1,5 +1,5 @@
 const CACHE = "mt-v1";
-const ASSETS = ["/web/", "/web/mt.js", "/web/index.html", "/web/manifest.json"];
+const ASSETS = ["/", "/mt.js", "/manifest.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
