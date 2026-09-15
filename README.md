@@ -1,15 +1,9 @@
 # 數學解題練習 (MathTutor)
 
-台灣 **小一 ~ 高三** 的數學隨機出題練習程式。支援 **Windows / macOS / Linux / iOS / Android**。
+台灣 **小一 ~ 高三** 的數學隨機出題練習程式。支援 **Windows / macOS / Linux / Android**。
 
 ## 下載
 
-### 📱 手機版（iOS / Android / 任何瀏覽器）
-- **網址：https://tangerserver.github.io/math-tutor/**
-- 用手機瀏覽器（iPhone Safari / Android Chrome）開啟後選擇 **分享 → 加到主畫面**，即可像 App 一樣使用
-- 離線可用，免安裝
-
-### 💻 電腦版
 前往 [Release 頁面](https://github.com/tangerserver/math-tutor/releases) 下載最新版：
 
 | 平台 | 檔案 | 說明 |
@@ -18,6 +12,7 @@
 | Windows | `MathTutor.exe` | 免安裝版，直接執行 |
 | macOS | `MathTutor-macOS.zip` | 解壓後拖入「應用程式」資料夾 |
 | Linux | `MathTutor-Linux.zip` | 64 位元，需安裝 WebKit2GTK |
+| Android | `MathTutor-Android.apk` | 下載後直接安裝（需允許安裝未知來源 App） |
 
 下載後即可使用，免安裝任何 Python 執行環境。
 
@@ -50,18 +45,19 @@
   - Fedora：`sudo dnf install pango gdk-pixbuf2 libnotify webkit2gtk4.1`
 
 ### 手機
-- iOS Safari 或 Android Chrome（現代瀏覽器即可）
+- Android 8.0 以上（下載 `MathTutor-Android.apk` 安裝）
+- iOS 版需 Apple Developer 帳號後續提供
 
 ## 使用方式
 
-1. 下載並執行對應平台的程式（或開啟手機版網址）
+1. 下載並執行對應平台的程式（手機下載 APK 安裝）
 2. 選擇年級與題型
 3. 輸入答案後按 Enter 或「作答」按鈕
 
 ## 開發建置
 
 - 桌面版使用 [pywebview](https://github.com/r0x0r/pywebview) + PyInstaller，跨平台由 GitHub Actions 自動編譯
-- 手機版為 PWA（`docs/`），核心題庫引擎以 JavaScript 實作
+- Android 版為 [Capacitor](https://capacitorjs.com) 包裝 WebView（`docs/` 核心題庫引擎以 JavaScript 實作），由 GitHub Actions 建置 APK
 
 ## 授權
 
