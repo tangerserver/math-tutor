@@ -1,4 +1,4 @@
-const CACHE = "mt-v2";
+const CACHE = "mt-v3";
 const ASSETS = ["/", "/mt.js", "/manifest.json", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -8,19 +8,20 @@ self.addEventListener("install", e => {
 
 self.addEventListener("activate", e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
+      await self.clients.claim();
+      // 通知所有開著的頁面：控制者已更新，請重新載入以取得最新版
+      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      clients.forEach(c => { try { c.navigate(c.url); } catch (err) {} });
+    })()
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", e => {
   const url = new URL(e.request.url);
-  const isDoc = e.request.mode === "navigate" || url.pathname.endsWith("index.html");
-  const isCode = url.pathname.endsWith("/mt.js");
-  // HTML 與題庫 JS：每次優先連網抓最新（修改即時生效），斷線才用快取
-  if (isDoc || isCode) {
+  if (e.request.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith("/mt.js")) {
     e.respondWith(
       fetch(e.request)
         .then(res => {
@@ -32,7 +33,6 @@ self.addEventListener("fetch", e => {
     );
     return;
   }
-  // 靜態資源（icon/manifest）：快取優先，離線可用
   e.respondWith(
     caches.match(e.request).then(r =>
       r || fetch(e.request).then(res => {
