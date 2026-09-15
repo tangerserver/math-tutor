@@ -90,10 +90,11 @@ lint/tmp/
 *.hprof
 
 # Cordova plugins for Capacitor
-capacitor-cordova-android-plugins
+# (https://github.com/github/gitignore/blob/HEAD/Android.gitignore)
+# capacitor-cordova-android-plugins  <- 需要提交以便 CI 直接編譯
 
 # Copied web assets
-app/src/main/assets/public
+# app/src/main/assets/public  <- 需要提交以便 CI 直接編譯
 
 # Generated Config files
 app/src/main/assets/capacitor.config.json
