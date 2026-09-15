@@ -105,7 +105,7 @@ color:#fff;font-size:.55rem;padding:2px 6px;border-radius:6px;font-weight:700}
   <div id="home" class="screen active">
     <header>
       <h1>數學解題練習</h1>
-      <p>小一 ~ 高三 · 109 種題型</p>
+      <p>小一 ~ 高三 · <span id="topicCount"></span> 種題型</p>
     </header>
     <div class="grade-grid" id="gradeGrid"></div>
   </div>
@@ -162,8 +162,7 @@ const GRADES=['小一','小二','小三','小四','小五','小六','國一','�
 const gradeGrid=document.getElementById('gradeGrid');
 const gradeCounts={};
 GRADES.forEach(g=>{gradeCounts[g]=(G[g]||[]).length;});
-// Count mix mode
-gradeCounts['隨機']=GRADES.reduce((s,g)=>s+gradeCounts[g],0);
+document.getElementById('topicCount').textContent=GRADES.reduce((s,g)=>s+gradeCounts[g],0);
 
 GRADES.forEach(g=>{
   const b=document.createElement('button');
@@ -226,8 +225,9 @@ function getQ(){
 
 function nextQ(){
   answered=false;
-  const[q,a]=getQ();
-  document.getElementById('qText').textContent=q;
+  const[question,answer]=getQ();
+  document.getElementById('qText').textContent=question;
+  document.getElementById('qText').__ans=answer;
   document.getElementById('qTopic').textContent=(currentGrade==='隨機'?'隨機':currentGrade)+(currentTopic?' · '+currentTopic:'');
   document.getElementById('ansInput').value='';
   document.getElementById('ansInput').className='';
@@ -274,39 +274,6 @@ function reveal(){
   document.getElementById('revealBtn').style.display='none';
   document.getElementById('nextBtn').style.display='';
 }
-
-// Store answer on qText element for reveal
-const qTextEl=document.getElementById('qText');
-const origGetQ=getQ;
-const _nextQ=nextQ;
-function patchedNextQ(){
-  _nextQ();
-  const[q,a]=document.getElementById('qText').textContent?[document.getElementById('qText').textContent,'']:[];
-  // Actually need to re-fetch to get answer
-  const qa=getQ.__last;
-  if(qa)qTextEl.__ans=qa[1];
-}
-// Better approach: override nextQ to save answer
-const realNextQ=nextQ;
-window.nextQ=function(){
-  answered=false;
-  const[question,answer]=getQ();
-  document.getElementById('qText').textContent=question;
-  document.getElementById('qText').__ans=answer;
-  document.getElementById('qTopic').textContent=(currentGrade==='隨機'?'隨機':currentGrade)+(currentTopic?' · '+currentTopic:'');
-  document.getElementById('ansInput').value='';
-  document.getElementById('ansInput').className='';
-  document.getElementById('ansInput').disabled=false;
-  document.getElementById('ansInput').focus();
-  document.getElementById('revealArea').innerHTML='';
-  document.getElementById('submitBtn').style.display='';
-  document.getElementById('revealBtn').style.display='';
-  document.getElementById('nextBtn').style.display='none';
-  const card=document.getElementById('qCard');
-  card.className='q-card glow';
-  setTimeout(()=>card.className='q-card',500);
-  total++;updateScore();
-};
 
 document.getElementById('ansInput').addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault();if(answered)nextQ();else submitAns();}
