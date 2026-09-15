@@ -25,6 +25,12 @@ jobs:
           echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
 
+      - name: Install npm deps (for capacitor-android)
+        run: npm install --no-audit --no-fund
+
+      - name: Sync web assets
+        run: npx cap sync android
+
       - name: Build APK
         working-directory: android
         run: |
