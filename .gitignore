@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+build/
+*.spec
+
+# 核心原始碼不上傳
+math_tutor.py
+installer.nsi
+_selftest.py
