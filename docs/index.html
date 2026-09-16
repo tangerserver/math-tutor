@@ -106,7 +106,6 @@ color:#fff;font-size:.55rem;padding:2px 6px;border-radius:6px;font-weight:700}
 <body>
 <canvas id="particles"></canvas>
 <div id="app">
-  <!-- 首頁 -->
   <div id="home" class="screen active">
     <header>
       <h1>數學解題練習</h1>
@@ -114,13 +113,11 @@ color:#fff;font-size:.55rem;padding:2px 6px;border-radius:6px;font-weight:700}
     </header>
     <div class="grade-grid" id="gradeGrid"></div>
   </div>
-  <!-- 題型選單 -->
   <div id="topics" class="screen">
     <button class="btn btn-secondary" onclick="navHome()" style="margin-bottom:8px">← 返回年級</button>
     <h2 id="topicTitle" style="font-size:1.2rem;margin-bottom:8px"></h2>
     <div class="topic-list" id="topicList"></div>
   </div>
-  <!-- 練習中 -->
   <div id="quiz" class="screen">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <button class="btn btn-secondary" onclick="goBack()" style="padding:8px 12px;font-size:.8rem">← 返回</button>
@@ -178,7 +175,6 @@ GRADES.forEach(g=>{
   b.onclick=()=>location.hash='#/topics/'+encodeURIComponent(g);
   gradeGrid.appendChild(b);
 });
-// Mix button
 const mb=document.createElement('button');
 mb.className='grade-btn';
 mb.innerHTML='隨機<span class="cnt">全題型隨機</span><span class="mix-badge">MIX</span>';
@@ -195,11 +191,9 @@ function showScreen(id){
   if(id==='home')document.querySelectorAll('.nav-btn')[0].classList.add('active');
 }
 
-// ---------- 導航（hash 路由，手機/瀏覽器返回鍵可用） ----------
 function navHome(){location.hash='#/';}
 function randomQuiz(){location.hash='#/quiz/隨機';}
 
-// 根據 hash 顯示對應畫面
 function route(){
   const h=decodeURIComponent(location.hash)||'#/';
   if(h.startsWith('#/quiz/')){
@@ -295,7 +289,6 @@ document.getElementById('ansInput').addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault();if(answered)nextQ();else submitAns();}
 });
 
-// ---------- 返回鍵 / hash 路由 ----------
 function goBack(){
   const h=location.hash;
   if(h.startsWith('#/quiz/')){
@@ -306,7 +299,6 @@ function goBack(){
 }
 window.addEventListener('hashchange',route);
 if(!location.hash)history.replaceState(null,'','#/');
-// 初次啟動依 hash 顯示
 route();
 
 function updateScore(){
@@ -324,7 +316,6 @@ function toast(msg,cls){
   setTimeout(()=>t.className='toast',1500);
 }
 
-// Particles
 (function(){
   const c=document.getElementById('particles'),ctx=c.getContext('2d');
   let W,H,pts=[];

@@ -140,7 +140,7 @@ return['(-'+a+')×(-'+b+')+(-'+c+') = ?',String(a*b-c)];});
 add('國一','一元方程',()=>{let a=R.randint(-5,5)||1,b=R.randint(-5,5);
 return['x 的 '+a+' 倍加 '+b+' = 0，x = ?',fmt(new F(-b,a))];});
 add('國一','科學記號',()=>{let m=R.choice([1.2,2.5,3.5,4.8,6.4,8.2,9.6]),n=R.randint(2,4);
-return[m+' × 10^'+n+' 用一般數字 = ?',String(m*Math.pow(10,n))];});
+return[m+' × 10^'+n+' 用一般數字 = ?',String(Math.round(m*Math.pow(10,n)))];});
 add('國一','一元一次不等式',()=>{let k=R.randint(-9,9),c=R.randint(1,9);
 while(k===c)k=R.randint(-9,9);
 let op=R.choice(['>','<','≥','≤']),sym=(op==='>'||op==='≥')?'>':'<';

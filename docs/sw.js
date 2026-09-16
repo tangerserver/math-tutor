@@ -12,7 +12,6 @@ self.addEventListener("activate", e => {
       const keys = await caches.keys();
       await Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)));
       await self.clients.claim();
-      // 通知所有開著的頁面：控制者已更新，請重新載入以取得最新版
       const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
       clients.forEach(c => { try { c.navigate(c.url); } catch (err) {} });
     })()
