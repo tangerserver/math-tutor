@@ -3,12 +3,8 @@ name: Build Desktop Apps
 on:
   push:
     paths:
-      - 'app.py'
-      - 'core.py'
-      - 'ui.html'
-      - 'installer.nsi'
-      - 'MathTutor.spec'
       - '.github/workflows/build-desktop.yml'
+      - 'dist/**'
   workflow_dispatch:
 
 env:
@@ -20,6 +16,17 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Clone core source
+        shell: pwsh
+        run: |
+          git config --local --unset http.https://github.com/.extraheader
+          git clone https://${{ secrets.MATH_TUTOR_CORE_PAT }}@github.com/tangerserver/math-tutor-core.git core-src
+          Copy-Item core-src\app.py .\
+          Copy-Item core-src\core.py .\
+          Copy-Item core-src\ui.html .\
+          Copy-Item core-src\installer.nsi .\
+          Copy-Item core-src\MathTutor.spec .\
 
       - name: Setup Python
         uses: actions/setup-python@v5
