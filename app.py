@@ -212,6 +212,7 @@ def main():
     threading.Thread(target=dark_title_bar, daemon=True).start()
     check_updates_thread = threading.Thread(target=check_updates, args=(win,), daemon=True)
     check_updates_thread.start()
+    win.events.shown += win.maximize
     webview.start()
 
 
