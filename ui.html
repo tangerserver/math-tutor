@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>數學解題練習</title>
+<style>
+  :root {
+    --bg1: #0b1120;
+    --bg2: #131b31;
+    --card: rgba(255, 255, 255, 0.055);
+    --card-brd: rgba(255, 255, 255, 0.10);
+    --text: #eef1fa;
+    --muted: #93a0bc;
+    --faint: #5c6a8c;
+    --accent: #7c6cff;
+    --accent2: #22d3ee;
+    --success: #3dd68c;
+    --error: #ff6f6f;
+    --warn: #ffb454;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Microsoft JhengHei UI", "Segoe UI", sans-serif;
+    color: var(--text);
+    background: radial-gradient(120% 120% at 15% 0%, #1c2b52 0%, var(--bg1) 45%, var(--bg2) 100%);
+    overflow: hidden;
+    user-select: none;
+  }
+  .orb { position: fixed; border-radius: 50%; filter: blur(90px); opacity: .35; z-index: 0; animation: float 16s ease-in-out infinite; }
+  .orb.a { width: 480px; height: 480px; background: #6b5bff; top: -160px; left: -120px; }
+  .orb.b { width: 420px; height: 420px; background: #0ea5c9; bottom: -160px; right: -90px; animation-delay: -6s; }
+  .orb.c { width: 260px; height: 260px; background: #b869ff; bottom: 4%; left: 30%; animation-delay: -11s; opacity: .22; }
+  @keyframes float {
+    0%,100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.12); }
+    66% { transform: translate(-30px, 24px) scale(.94); }
+  }
+  #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  .wrap { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column;
+          align-items: center; padding: 3.2vh 3vw 2vh; overflow-y: auto; }
+  .col { width: min(900px, 100%); display: flex; flex-direction: column; gap: 14px; }
+
+  header { display: flex; align-items: center; gap: 14px; padding: 6px 4px; }
+  .logo {
+    width: 52px; height: 52px; border-radius: 15px; flex: none;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 800; color: #0b1120;
+    box-shadow: 0 8px 26px rgba(124, 108, 255, .45);
+    animation: logoPulse 3.2s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.08) rotate(6deg); }
+  }
+  h1 { font-size: 24px; letter-spacing: 1px; }
+  .sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .ver { color: var(--accent2); font-size: 11px; font-weight: 700; margin-left: 8px;
+         background: rgba(34,211,238,.12); border: 1px solid rgba(34,211,238,.35);
+         padding: 2px 8px; border-radius: 999px; }
+
+  .card { background: var(--card); border: 1px solid var(--card-brd); border-radius: 18px;
+          backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+          box-shadow: 0 14px 44px rgba(0,0,0,.35);
+          transition: transform .25s ease, box-shadow .25s ease, border-color .25s; }
+  .card:hover { transform: translateY(-2px); border-color: rgba(124,108,255,.35);
+                box-shadow: 0 18px 54px rgba(0,0,0,.42), 0 0 0 1px rgba(124,108,255,.14); }
+
+  .row { display: flex; gap: 14px; align-items: center; padding: 14px 18px; flex-wrap: wrap; }
+  field { display: flex; align-items: center; gap: 10px; }
+  field label { color: var(--faint); font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+  select {
+    appearance: none; -webkit-appearance: none;
+    background: rgba(255,255,255,.06) url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2393a0bc' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1px solid var(--card-brd); border-radius: 10px; color: var(--text);
+    padding: 9px 34px 9px 12px; font-size: 13.5px; font-family: inherit; cursor: pointer;
+    outline: none; transition: border-color .2s, box-shadow .2s, transform .15s;
+  }
+  select:hover, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,108,255,.18); transform: translateY(-1px); }
+  select option { background: #141c33; color: #eef1fa; }
+
+  .qcard { padding: 26px 26px 22px; position: relative; overflow: hidden;
+           animation: glowPulse 5s ease-in-out infinite; }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 14px 44px rgba(0,0,0,.35); }
+    50% { box-shadow: 0 18px 64px rgba(0,0,0,.42), 0 0 0 1px rgba(124,108,255,.25), 0 0 34px rgba(124,108,255,.22); }
+  }
+  .qcard::after { content: ""; position: absolute; inset: 0; border-radius: 18px; pointer-events: none;
+                  background: radial-gradient(120% 90% at 50% -10%, rgba(124,108,255,.16), transparent 60%); }
+  .chip {
+    display: inline-block; font-size: 11px; font-weight: 700; color: #fff;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    padding: 5px 12px; border-radius: 999px; letter-spacing: .5px;
+    box-shadow: 0 4px 14px rgba(124,108,255,.35);
+    animation: chipIn .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes chipIn { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  #question {
+    position: relative; z-index: 1;
+    font-size: 19px; line-height: 1.65; margin-top: 18px; min-height: 66px;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  #question .caret { display: inline-block; width: 2px; height: 1.05em; vertical-align: -0.16em;
+                     background: var(--accent2); margin-left: 2px; animation: blink .7s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .ansrow { display: flex; gap: 10px; margin-top: 20px; }
+  .ans-in {
+    flex: 1; background: rgba(0,0,0,.30); border: 1px solid var(--card-brd); border-radius: 12px;
+    color: var(--text); font-size: 16px; padding: 13px 16px; font-family: inherit; outline: none;
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+  }
+  .ans-in:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,108,255,.20); transform: translateY(-1px); }
+  .ans-in::placeholder { color: var(--faint); }
+
+  .btn {
+    border: 0; border-radius: 12px; cursor: pointer; font-family: inherit;
+    font-weight: 700; font-size: 14.5px; padding: 13px 26px;
+    transition: transform .15s cubic-bezier(.34,1.56,.64,1), box-shadow .2s, filter .2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.95); }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #0b1120;
+                 box-shadow: 0 8px 22px rgba(124,108,255,.4); }
+  .btn-primary:hover { filter: brightness(1.12); box-shadow: 0 10px 28px rgba(124,108,255,.55); }
+  .btn-ghost { background: rgba(255,255,255,.07); color: var(--muted); }
+  .btn-ghost:hover { background: rgba(255,255,255,.13); color: var(--text); }
+  .btn:disabled { opacity: .6; cursor: default; transform: none; }
+
+  #feedback { position: relative; z-index: 1; min-height: 24px; font-size: 14px; font-weight: 700;
+              margin-top: 14px; opacity: 0; transform: translateY(-4px);
+              transition: opacity .25s, transform .25s; }
+  #feedback.pop { opacity: 1; transform: translateY(0); }
+
+  .qcard.bounce { animation: bounce .5s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.025); box-shadow: 0 0 0 1px var(--success), 0 0 44px rgba(61,214,140,.45); }
+    60% { transform: scale(.985); }
+    100% { transform: scale(1); }
+  }
+  .qcard.shake { animation: shake .45s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  .actions { display: flex; gap: 10px; padding: 10px; justify-content: center; }
+
+  .stats { padding: 16px 18px 14px; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .tile { text-align: center; background: rgba(0,0,0,.25); border: 1px solid var(--card-brd);
+          border-radius: 13px; padding: 12px 4px;
+          transition: transform .2s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s; }
+  .tile:hover { transform: translateY(-3px) scale(1.04); }
+  .tile .k { font-size: 11px; color: var(--faint); font-weight: 700; }
+  .tile .v { font-size: 21px; font-weight: 800; margin-top: 3px; transition: transform .2s; }
+  .tile.correct .v { color: var(--success); }
+  .tile.correct:hover { border-color: rgba(61,214,140,.4); box-shadow: 0 6px 18px rgba(61,214,140,.15); }
+  .tile.wrong   .v { color: var(--error); }
+  .tile.wrong:hover { border-color: rgba(255,111,111,.4); box-shadow: 0 6px 18px rgba(255,111,111,.15); }
+  .tile.rate    .v { color: var(--accent2); }
+  .tile.rate:hover { border-color: rgba(34,211,238,.4); box-shadow: 0 6px 18px rgba(34,211,238,.15); }
+  .tile.streak  .v { color: var(--warn); }
+  .tile.streak:hover { border-color: rgba(255,180,84,.4); box-shadow: 0 6px 18px rgba(255,180,84,.15); }
+  .statfoot { display: flex; justify-content: space-between; align-items: center;
+              color: var(--muted); font-size: 12px; margin-top: 12px; }
+  .bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,.07); margin-top: 10px; overflow: hidden; }
+  .barfill { position: relative; height: 100%; width: 0; border-radius: 999px; overflow: hidden;
+             background: linear-gradient(90deg, var(--accent), var(--accent2));
+             transition: width .6s cubic-bezier(.22,1,.36,1); }
+  .barfill::after { content: ""; position: absolute; inset: 0;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+                    transform: translateX(-100%); animation: sheen 2.4s ease-in-out infinite; }
+  @keyframes sheen { 60%,100% { transform: translateX(100%); } }
+
+  .hint { color: var(--faint); font-size: 11.5px; text-align: center; padding-bottom: 4px; }
+  kbd { background: rgba(255,255,255,.08); border: 1px solid var(--card-brd); border-radius: 5px;
+        padding: 1px 7px; font-family: inherit; font-size: 11px; }
+
+  .update { border-left: 3px solid var(--accent2);
+            background: linear-gradient(135deg, rgba(74,222,128,.08), rgba(16,185,129,.14)); }
+  .update.hidden { display: none; }
+  .update-t { font-size: 15px; font-weight: 600; }
+  .update-t b { color: var(--accent2); }
+  .update-s { color: var(--muted); font-size: 12.5px; margin: 4px 0 12px; }
+  .update-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .toast { border-left: 3px solid var(--success);
+           background: linear-gradient(135deg, rgba(61,214,140,.16), rgba(16,185,129,.26));
+           display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700;
+           animation: toastIn .4s cubic-bezier(.34,1.56,.64,1); }
+  .toast.hidden { display: none; }
+  @keyframes toastIn { from { transform: translateY(-14px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+
+  <div class="wrap">
+    <div class="col">
+      <header>
+        <div class="logo">∑</div>
+        <div>
+          <h1>數學解題練習<span class="ver">v2.4</span></h1>
+          <div class="sub">小一 ~ 高三 · 12 個年級 · 含應用題 · 多種答案格式</div>
+        </div>
+      </header>
+
+      <div class="card update hidden" id="update">
+        <div class="update-t">發現新版本 <b id="update-ver"></b></div>
+        <div class="update-s" id="update-s">下載完成後將自動關閉並重新開啟。</div>
+        <div class="update-row">
+          <button class="btn btn-primary" id="update-btn" onclick="doUpdate()">立即更新</button>
+          <button class="btn btn-ghost" id="update-open" onclick="openUpdate()">開啟下載頁面</button>
+        </div>
+      </div>
+
+      <div class="card toast hidden" id="toast"></div>
+
+      <div class="card row">
+        <field>
+          <label>年級</label>
+          <select id="grade-select"></select>
+        </field>
+        <field>
+          <label>題型</label>
+          <select id="topic-select"></select>
+        </field>
+      </div>
+
+      <div class="card qcard" id="qcard">
+        <span class="chip" id="chip">—</span>
+        <div id="question">載入中…</div>
+        <div class="ansrow">
+          <input class="ans-in" id="answer" type="text" placeholder="輸入答案… (支援 3/4、3,-2、1,2;3,4)" autocomplete="off" spellcheck="false">
+          <button class="btn btn-primary" id="go">作答</button>
+        </div>
+        <div id="feedback"></div>
+      </div>
+
+      <div class="card actions">
+        <button class="btn btn-ghost" id="next">下一題</button>
+        <button class="btn btn-ghost" id="reveal">看答案</button>
+        <button class="btn btn-ghost" id="reset">重新計分</button>
+      </div>
+
+      <div class="card stats">
+        <div class="tiles">
+          <div class="tile correct"><div class="k">答對</div><div class="v" id="st-correct">0</div></div>
+          <div class="tile wrong"><div class="k">答錯</div><div class="v" id="st-wrong">0</div></div>
+          <div class="tile rate"><div class="k">正確率</div><div class="v" id="st-rate">0%</div></div>
+          <div class="tile streak"><div class="k">連對</div><div class="v" id="st-streak">0</div></div>
+        </div>
+        <div class="statfoot">
+          <span>累計 <b id="st-total">0</b> 題</span>
+          <span id="st-avg">平均作答 —</span>
+        </div>
+        <div class="bar"><div class="barfill" id="bar"></div></div>
+      </div>
+
+      <div class="hint"><kbd>Enter</kbd> 快速作答 · 切換年級自動更新題型</div>
+    </div>
+  </div>
+
+<script>
+  let GRADES = [];
+  let answerTimer = null;
+  let typeTimer = null;
+  let qSeq = 0;
+  const $ = id => document.getElementById(id);
+
+  function fetchGrades(){ return pywebview.api.grades(); }
+  function newQ(){ return pywebview.api.new_question($('grade-select').value, $('topic-select').value); }
+
+  const canvas = $('particles');
+  const ctx = canvas.getContext('2d');
+  let parts = [];
+  function sizeCanvas(){
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  }
+  function initParts(){
+    const n = 28;
+    parts = Array.from({ length: n }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: 1 + Math.random() * 2.2,
+      spd: 0.18 + Math.random() * 0.4,
+      dy: -(0.15 + Math.random() * 0.35),
+      hue: Math.random() < 0.5 ? 255 : 195,
+    }));
+  }
+  let raf = null;
+  function loop(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of parts){
+      p.y += p.dy;
+      p.x += Math.sin(p.y * 0.008 + p.r) * 0.3;
+      if (p.y < -8){ p.y = canvas.height + 8; p.x = Math.random() * canvas.width; }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue}, 85%, 75%, ${0.25 + p.spd * 0.45})`;
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(loop);
+  }
+  sizeCanvas();
+  initParts();
+  loop();
+  window.addEventListener('resize', () => { sizeCanvas(); initParts(); });
+
+  window.addEventListener('pywebviewready', async () => {
+    GRADES = await fetchGrades();
+    try {
+      const u = await pywebview.api.updated();
+      if (u.just_updated) showUpdatedToast(u.version);
+    } catch (e) {}
+    const sel = $('grade-select');
+    GRADES.forEach(g => {
+      const o = document.createElement('option');
+      o.value = g.grade; o.textContent = g.grade;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', onGrade);
+    $('topic-select').addEventListener('change', () => nextQ());
+    $('go').addEventListener('click', submit);
+    $('next').addEventListener('click', nextQ);
+    $('reveal').addEventListener('click', reveal);
+    $('reset').addEventListener('click', reset);
+    $('answer').addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    onGrade();
+  });
+
+  function topicsOf(grade){
+    const g = GRADES.find(x => x.grade === grade);
+    return g ? g.topics : [];
+  }
+
+  async function onGrade(){
+    const ts = $('topic-select');
+    ts.innerHTML = '';
+    topicsOf($('grade-select').value).forEach(t => {
+      const o = document.createElement('option');
+      o.value = t; o.textContent = t;
+      ts.appendChild(o);
+    });
+    await nextQ();
+  }
+
+  function typeText(el, text, seq){
+    clearTimeout(typeTimer);
+    el.textContent = '';
+    const caret = document.createElement('span');
+    caret.className = 'caret';
+    el.appendChild(caret);
+    let i = 0;
+    const step = () => {
+      if (seq !== qSeq) return;
+      el.textContent = text.slice(0, i);
+      el.appendChild(caret);
+      if (i < text.length){
+        i += 1;
+        typeTimer = setTimeout(step, 11);
+      }
+    };
+    step();
+  }
+
+  async function nextQ(){
+    if (answerTimer) { clearTimeout(answerTimer); answerTimer = null; }
+    qSeq += 1;
+    const seq = qSeq;
+    const r = await newQ();
+    if (seq !== qSeq) return;
+    $('chip').textContent = $('grade-select').value + ' · ' + r.topic;
+    const card = $('qcard');
+    card.classList.remove('bounce', 'shake');
+    typeText($('question'), r.question, qSeq);
+    popFeedback('', 'transparent');
+    const input = $('answer');
+    input.value = ''; input.focus();
+  }
+
+  function popFeedback(text, color){
+    const f = $('feedback');
+    f.textContent = text;
+    f.style.color = color;
+    f.classList.remove('pop');
+    requestAnimationFrame(() => f.classList.add('pop'));
+  }
+
+  async function renderStats(s){
+    $('st-correct').textContent = s.correct;
+    $('st-wrong').textContent = s.wrong;
+    $('st-rate').textContent = s.rate + '%';
+    $('st-streak').textContent = s.streak;
+    $('st-total').textContent = s.total;
+    $('st-avg').textContent = s.avg != null ? `平均作答 ${s.avg} 秒/題` : '平均作答 —';
+    $('bar').style.width = s.rate + '%';
+  }
+
+  async function submit(){
+    if (answerTimer) return;
+    const v = $('answer').value.trim();
+    if (!v) { popFeedback('請先輸入答案', 'var(--warn)'); return; }
+    const r = await pywebview.api.submit(v);
+    if (!r) return;
+    renderStats(r.stats);
+    const card = $('qcard');
+    card.classList.remove('bounce', 'shake');
+    void card.offsetWidth;
+    card.classList.add(r.ok ? 'bounce' : 'shake');
+    popFeedback(r.ok
+      ? `✔ 答對了！ (${r.elapsed} 秒)`
+      : `✘ 答錯了，正確答案：${r.correct_answer} (${r.elapsed} 秒)`,
+      r.ok ? 'var(--success)' : 'var(--error)');
+    answerTimer = setTimeout(() => { answerTimer = null; nextQ(); }, 1000);
+  }
+
+  async function reveal(){
+    const r = await pywebview.api.reveal();
+    popFeedback(`正確答案：${r.answer}`, 'var(--accent2)');
+  }
+
+  async function reset(){
+    const r = await pywebview.api.reset();
+    renderStats(r.stats);
+    popFeedback('已重新計分，加油！', 'var(--accent2)');
+  }
+
+  let UPDATE_INFO = null;
+  let autoTimer = null;
+
+  function showUpdatedToast(version){
+    const t = $('toast');
+    t.textContent = `✔ 已安裝至最新版本 v${version}（自動更新完成）`;
+    t.classList.remove('hidden');
+    setTimeout(() => t.classList.add('hidden'), 6000);
+  }
+
+  function autoUpdate(){
+    if (!UPDATE_INFO || autoTimer) return;
+    autoTimer = setTimeout(() => { autoTimer = null; doUpdate(); }, 2500);
+  }
+
+  window.showUpdate = function(info){
+    UPDATE_INFO = info;
+    $('update-ver').textContent = info.version;
+    $('update').classList.remove('hidden');
+    autoUpdate();
+  };
+
+  async function doUpdate(){
+    clearTimeout(autoTimer); autoTimer = null;
+    if (!UPDATE_INFO) return;
+    const btn = $('update-btn');
+    const msg = $('update-s');
+    btn.disabled = true;
+    btn.textContent = '下載中…';
+    msg.textContent = '下載完成後將自動關閉視窗並重新安裝，請稍候。';
+    const ok = await pywebview.api.install_update(UPDATE_INFO.asset_url);
+    if (!ok) { btn.disabled = false; btn.textContent = '立即更新'; }
+  }
+
+  async function openUpdate(){
+    if (!UPDATE_INFO) return;
+    await pywebview.api.open_update(UPDATE_INFO.page_url);
+  }
+</script>
+</body>
+</html>
